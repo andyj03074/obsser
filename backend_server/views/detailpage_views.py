@@ -11,6 +11,10 @@ bp = Blueprint('detail', __name__, url_prefix='/detail')
 
 @bp.route('/<string:detail_name>', methods=['GET'])
 def detail(detail_name):
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     if request.method == 'GET':
         product = ProductInfo.query.filter_by(name=detail_name).first_or_404()
         file_path = product.image
@@ -30,6 +34,10 @@ def detail(detail_name):
 
 @bp.route('/<string:detail_name>/like', methods=['GET'])
 def add_myproduct(detail_name):
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     status = {"result" : "success"}
     email = session['email']
     user = User.query.filter_by(email=email).first()

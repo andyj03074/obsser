@@ -9,6 +9,10 @@ bp = Blueprint('mytrip_views', __name__, url_prefix='/mytrip')
 
 @bp.route('/myplace', methods=['GET'])
 def get_myplace():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     data = {}
     namelist = []
     description_list = []
@@ -28,6 +32,10 @@ def get_myplace():
 
 @bp.route('/delete', methods=['POST'])
 def delete_myplace():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     status = {"result": "success"}
     data = request.json
     del_list = data['delete_table']
@@ -47,6 +55,10 @@ def delete_myplace():
 
 @bp.route('/add', methods=['POST'])
 def add_myplace():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     status = {"result" : "success"}
     data = request.json
     add_list = data['add_table']
@@ -66,6 +78,10 @@ def add_myplace():
 
 @bp.route('/addmytrip', methods=['POST'])
 def add_mytrip():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     status = {"result" : "success"}
     data = request.json
     name = data['name']
@@ -106,6 +122,10 @@ def extract_route(manager, routing, solution):
 
 @bp.route('/pathfind', methods=['POST'])
 def pathfind():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     data = request.json
     distance_matrix = data['distance_matrix']
 

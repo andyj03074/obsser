@@ -9,6 +9,10 @@ bp = Blueprint('place_page_views', __name__, url_prefix='/place_pages')
 
 @bp.route('/<string:tags>', methods=['GET'])
 def place_pages(tags):
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     data = {}
     name_data = []
     type_data = []

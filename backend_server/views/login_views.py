@@ -11,6 +11,10 @@ bp = Blueprint('login_views', __name__, url_prefix='/auth')
 
 @bp.route('/signup', methods=['POST'])
 def signup():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     status = {"result": "fail"}
     if request.method == 'POST':
         data = request.json
@@ -29,6 +33,10 @@ def signup():
 
 @bp.route('/login', methods=['POST'])
 def login():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     status = {"result": "fail"}
     if request.method == 'POST':
         data = request.json

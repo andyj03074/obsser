@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
+from flask_cors import CORS
 
 import config
 
@@ -12,7 +12,7 @@ migrate = Migrate()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
-
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     #ORM Config
     db.init_app(app)

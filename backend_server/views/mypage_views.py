@@ -9,6 +9,10 @@ bp = Blueprint('mypage_views', __name__, url_prefix='/mypage')
 
 @bp.route('/mypruduct', methods=['GET'])
 def my_product():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     data = {}
     price =[]
     name = []
@@ -30,6 +34,10 @@ def my_product():
 
 @bp.route('/notice', methods=['GET'])
 def _notice():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     data = {}
     description = []
     recent_notice = Notice.query.order_by(Notice.id.desc()).limit(5)
@@ -43,6 +51,10 @@ def _notice():
 
 @bp.route('/myinquiry', methods=['GET'])
 def my_inquiry():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     data = {}
     title = []
     content = []
@@ -61,6 +73,10 @@ def my_inquiry():
 
 @bp.route('/addinquiry', methods=['POST'])
 def add_inquiry():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
     status = {"result" : "success"}
     data = request.json
     title = data['title']
