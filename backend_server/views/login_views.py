@@ -21,7 +21,7 @@ def signup():
         username = data['username']
         email = data['email']
         pwd = data['password']
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()
         if user is None:
             user = User(username=username, password=generate_password_hash(pwd), email=email)
             db.session.add(user)
