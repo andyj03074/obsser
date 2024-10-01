@@ -138,8 +138,8 @@ def add_mytrip():
     db.session.commit()
 
     plan = TravelPlan.query.filter_by(name=name).first()
-    if plan not in user.mytrip_list:
-        user.mytrip_list.append(plan)
+    if plan not in user.mytravel_list:
+        user.mytravel_list.append(plan)
         db.session.commit()
         return status
 
