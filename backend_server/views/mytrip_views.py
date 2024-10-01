@@ -3,12 +3,17 @@ from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
 from backend_server import db
 from backend_server.models import User, PlaceInfo, TravelPlan
-from main_views import img_encode
+import base64
 
 
 bp = Blueprint('mytrip_views', __name__, url_prefix='/mytrip')
 
 
+def img_encode(file_path):
+    with open(file_path, "rb") as image_file:
+        encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+
+        return encoded_image
 
 
 @bp.route('/myplace', methods=['GET'])

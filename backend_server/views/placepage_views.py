@@ -1,10 +1,17 @@
 from flask import Blueprint, request, session
-from main_views import img_encode
+import base64
 
 from backend_server.models import PlaceInfo, User
 from backend_server import db
 
 bp = Blueprint('place_page_views', __name__, url_prefix='/place_pages')
+
+
+def img_encode(file_path):
+    with open(file_path, "rb") as image_file:
+        encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+
+        return encoded_image
 
 
 @bp.route('/<string:tags>', methods=['GET'])
