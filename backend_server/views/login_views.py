@@ -47,7 +47,8 @@ def login():
             session.clear()
             session['email'] = user.email
             status["result"] = "success"
+            status["name"] = user.username
 
-    return status
+        return status
 
 
