@@ -53,6 +53,32 @@ def delete_myplace():
     return status
 
 
+@bp.route(rule='', methods=['GET'])
+def get_mytrip():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
+    data = {}
+    name_list = []
+    date_list = []
+    image_url_list = []
+    email = session["email"]
+    user = User.query.filter_by(email=email).first()
+    travelplan_list = user.travelplan_list
+    for travelplan in travelplan_list:
+        name_list.append(travelplan.name)
+        date_list.append(travelplan.date)
+        image_url_list.append(travelplan.image_url)
+
+    data['name'] = name_list
+    data['date'] = date_list
+    data['image_url'] = image_url_list
+
+    return data
+
+
+
 @bp.route('/add', methods=['POST'])
 def add_myplace():
     if request.method == 'OPTIONS':
