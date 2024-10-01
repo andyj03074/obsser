@@ -52,3 +52,8 @@ def login():
         return status
 
 
+@bp.route(rule='/logout', methods=['GET'])
+def logout():
+    session.clear()
+    status = {"result": "success"}
+    return status
