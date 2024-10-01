@@ -2,11 +2,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
+import base64
+
 
 import config
 
 db = SQLAlchemy()
 migrate = Migrate()
+
 
 
 def create_app():

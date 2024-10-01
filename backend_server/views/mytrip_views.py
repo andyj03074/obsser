@@ -3,8 +3,12 @@ from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
 from backend_server import db
 from backend_server.models import User, PlaceInfo, TravelPlan
+from main_views import img_encode
+
 
 bp = Blueprint('mytrip_views', __name__, url_prefix='/mytrip')
+
+
 
 
 @bp.route('/myplace', methods=['GET'])
@@ -16,16 +20,25 @@ def get_myplace():
     data = {}
     namelist = []
     description_list = []
+    tags_list = []
+    image_list = []
     if request.method == "GET":
         email = session["email"]
         user = User.query.filter_by(email=email).first()
         myplace_list = user.myplace_list
         for myplace in myplace_list:
-             namelist.append(myplace.name)
-             description_list.append(myplace.description)
+            namelist.append(myplace.name)
+            description_list.append(myplace.description)
+            tags_list.append(myplace.tags)
+            file_path = myplace.image
+            encoded_image = img_encode(file_path)
+            image_list.append(encoded_image)
+
 
         data['name'] = namelist
         data['description'] = description_list
+        data['tags'] = tags_list
+        data['image'] = image_list
 
         return data
 

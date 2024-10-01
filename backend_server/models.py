@@ -18,6 +18,7 @@ class PlaceInfo(db.Model):
     tag = db.Column(db.String(20), nullable=False)
     type = db.Column(db.String(20), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    image = db.Column(db.String(), nullable=False)
 
 
 class ProductInfo(db.Model):

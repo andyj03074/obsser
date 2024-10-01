@@ -2,6 +2,7 @@ from flask import Blueprint, session, request
 
 from backend_server.models import User, Notice, Inquiry
 from backend_server import db
+from main_views import img_encode
 
 
 bp = Blueprint('mypage_views', __name__, url_prefix='/mypage')
@@ -17,6 +18,7 @@ def my_product():
     price =[]
     name = []
     description = []
+    image_list = []
     email = session['email']
     user = User.query.filter_by(email=email).first()
     myproduct_list = user.myproduct_list
@@ -24,10 +26,16 @@ def my_product():
         price.append(myproduct.price)
         name.append(myproduct.name)
         description.append(myproduct.description)
+        file_path = myproduct.image
+        encoded_image = img_encode(file_path)
+        image_list.append(encoded_image)
+
 
     data['price'] = price
     data['name'] = name
     data['description'] = description
+    data['image_list'] = image_list
+
 
     return data
 
