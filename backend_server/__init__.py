@@ -20,7 +20,11 @@ def create_app():
     #ORM Config
     db.init_app(app)
     migrate.init_app(app, db)
+
+    jwt.init_app(app)
+
     from . import models
+
 
 
     from .views import main_views, login_views, detailpage_views, placepage_views, mytrip_views, mypage_views
