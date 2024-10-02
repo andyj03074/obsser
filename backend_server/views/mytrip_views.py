@@ -122,7 +122,7 @@ def get_mytrip():
     current_user = get_jwt_identity()
     email = current_user['email']
     user = User.query.filter_by(email=email).first()
-    travelplan_list = user.travelplan_list
+    travelplan_list = user.mytravel_list
     for travelplan in travelplan_list:
         name_list.append(travelplan.name)
         date_list.append(travelplan.date)
