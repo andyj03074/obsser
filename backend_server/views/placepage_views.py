@@ -54,8 +54,8 @@ def place_page():
     db.session.add(product)
     db.session.commit()
     li = ProductInfo.query.all()
-
-    return len(li)
+    data = {"len": len(li)}
+    return data
 
 
 #업로드 코드
