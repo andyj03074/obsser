@@ -18,7 +18,7 @@ def img_encode(file_path):
 
 #여행계획 추가
 @bp.route('/addmytrip', methods=['POST'])
-@jwt_required
+@jwt_required()
 def add_mytrip():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
@@ -45,8 +45,10 @@ def add_mytrip():
     status["result"] = "fail"
     return status
 
+
 #내 장소 찜 목록 불러오기
 @bp.route('/myplace', methods=['GET'])
+@jwt_required()
 def get_myplace():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
@@ -58,7 +60,8 @@ def get_myplace():
     tags_list = []
     image_list = []
     if request.method == "GET":
-        email = session["email"]
+        current_user = get_jwt_identity()
+        email = current_user['email']
         user = User.query.filter_by(email=email).first()
         myplace_list = user.myplace_list
         for myplace in myplace_list:
@@ -80,6 +83,7 @@ def get_myplace():
 
 #장소 찜 목록 지우기
 @bp.route('/delete', methods=['POST'])
+@jwt_required()
 def delete_myplace():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
@@ -88,7 +92,8 @@ def delete_myplace():
     status = {"result": "success"}
     data = request.json
     del_list = data['delete_table']
-    email = session["email"]
+    current_user = get_jwt_identity()
+    email = current_user['email']
     user = User.query.filter_by(email=email).first()
 
     for place in del_list:
@@ -104,6 +109,7 @@ def delete_myplace():
 
 #내 여행계획 불러오기
 @bp.route(rule='', methods=['GET'])
+@jwt_required()
 def get_mytrip():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
@@ -113,7 +119,8 @@ def get_mytrip():
     name_list = []
     date_list = []
     image_url_list = []
-    email = session["email"]
+    current_user = get_jwt_identity()
+    email = current_user['email']
     user = User.query.filter_by(email=email).first()
     travelplan_list = user.travelplan_list
     for travelplan in travelplan_list:
@@ -130,6 +137,7 @@ def get_mytrip():
 
 # 장소 찜 목록에 장소 추가
 @bp.route('/add', methods=['POST'])
+@jwt_required()
 def add_myplace():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
@@ -138,7 +146,8 @@ def add_myplace():
     status = {"result" : "success"}
     data = request.json
     add_list = data['add_table']
-    email = session["email"]
+    current_user = get_jwt_identity()
+    email = current_user['email']
     user = User.query.filter_by(email=email).first()
 
     for place in add_list:
@@ -172,6 +181,7 @@ def extract_route(manager, routing, solution):
 
 #경로 탐색
 @bp.route('/pathfind', methods=['POST'])
+@jwt_required()
 def pathfind():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
