@@ -53,7 +53,7 @@ def place_page():
     product = PlaceInfo(name=name, type=type, tag=tag, description=description, image=image)
     db.session.add(product)
     db.session.commit()
-    li = ProductInfo.query.all()
+    li = PlaceInfo.query.all()
     data = {"len": len(li)}
     return data
 
