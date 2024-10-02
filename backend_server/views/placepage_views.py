@@ -24,24 +24,19 @@ def place_pages(tags):
         return '', 200
 
     data = {}
-    name_data = []
-    type_data = []
-    image_data = []
+    data_list = []
 
     if request.method == 'GET':
         places = PlaceInfo.query.filter_by(tag=tags).all()
         for place in places:
-            name_data.append(place.name)
-            type_data.append(place.type)
+            pl = {}
+            pl['name'] = place.name
             file_path = place.image
             encoded_image = img_encode(file_path)
-            image_data.append(encoded_image)
+            pl['image'] = encoded_image
+            data_list.append(pl)
 
-
-        data["names"] = name_data
-        data["types"] = type_data
-        data["images"] = image_data
-
+    data['data'] = data_list
 
     return data
 
