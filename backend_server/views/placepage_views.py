@@ -50,7 +50,7 @@ def place_page():
     tag = data['tag']
     description = data['description']
     image = data['image']
-    product = ProductInfo(name=name, type=type, tag=tag, description=description, image=image)
+    product = PlaceInfo(name=name, type=type, tag=tag, description=description, image=image)
     db.session.add(product)
     db.session.commit()
     li = ProductInfo.query.all()
