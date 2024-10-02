@@ -3,7 +3,7 @@ from flask import Blueprint, session, request
 from backend_server.models import User, Notice, Inquiry
 from backend_server import db
 import base64
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 bp = Blueprint('mypage_views', __name__, url_prefix='/mypage')
 
@@ -17,6 +17,7 @@ def img_encode(file_path):
 
 #내 상품 찜 목록
 @bp.route('/mypruduct', methods=['GET'])
+@jwt_required()
 def my_product():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
@@ -27,7 +28,8 @@ def my_product():
     name = []
     description = []
     image_list = []
-    email = session['email']
+    current_user = get_jwt_identity()
+    email = current_user['email']
     user = User.query.filter_by(email=email).first()
     myproduct_list = user.myproduct_list
     for myproduct in myproduct_list:
@@ -68,6 +70,7 @@ def _notice():
 
 #1:1 문의사항
 @bp.route('/myinquiry', methods=['GET'])
+@jwt_required()
 def my_inquiry():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
@@ -76,7 +79,8 @@ def my_inquiry():
     data = {}
     title = []
     content = []
-    email = session['email']
+    current_user = get_jwt_identity()
+    email = current_user['email']
     user = User.query.filter_by(email=email).first()
     inquiry_list = user.inquiry_list
     for inquiry in inquiry_list:
@@ -91,6 +95,7 @@ def my_inquiry():
 
 #1:1 문의사항 추가
 @bp.route('/addinquiry', methods=['POST'])
+@jwt_required()
 def add_inquiry():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
@@ -100,7 +105,8 @@ def add_inquiry():
     data = request.json
     title = data['title']
     content = data['content']
-    email = session['email']
+    current_user = get_jwt_identity()
+    email = current_user['email']
     user = User.query.filter_by(email=email).first()
 
     inquiry = Inquiry(title=title, content=content)

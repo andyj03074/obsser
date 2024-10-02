@@ -3,7 +3,7 @@ from flask import Blueprint, request, session
 from backend_server import db
 from backend_server.models import ProductInfo, User, PlaceInfo
 import base64
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 bp = Blueprint('detail', __name__, url_prefix='/detail')
 
@@ -38,13 +38,15 @@ def detail(detail_name):
 
 #상품 찜 목록에 상품 추가
 @bp.route('/<string:detail_name>/like', methods=['GET'])
+@jwt_required()
 def add_myproduct(detail_name):
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
         return '', 200
 
     status = {"result" : "success"}
-    email = session['email']
+    current_user = get_jwt_identity()
+    email = current_user['email']
     user = User.query.filter_by(email=email).first()
     product = ProductInfo.query.filter_by(name=detail_name).first_or_404()
     if product not in user.myproducts:
