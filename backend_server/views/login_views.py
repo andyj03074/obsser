@@ -1,4 +1,4 @@
-from flask import Blueprint, request, session, g
+from flask import Blueprint, request, session, g, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import redirect
 
@@ -28,6 +28,7 @@ def signup():
             db.session.commit()
             status["result"] = "success"
 
+
     return status
 
 
@@ -49,7 +50,9 @@ def login():
             status["result"] = "success"
             status["name"] = user.username
 
-        return status
+
+        response = make_response(status, 200)
+        return response
 
 
 @bp.route(rule='/logout', methods=['GET'])

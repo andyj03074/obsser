@@ -16,6 +16,7 @@ def img_encode(file_path):
         return encoded_image
 
 
+#내 장소 찜 목록 불러오기
 @bp.route('/myplace', methods=['GET'])
 def get_myplace():
     if request.method == 'OPTIONS':
@@ -48,6 +49,7 @@ def get_myplace():
         return data
 
 
+#장소 찜 목록 지우기
 @bp.route('/delete', methods=['POST'])
 def delete_myplace():
     if request.method == 'OPTIONS':
@@ -71,6 +73,7 @@ def delete_myplace():
     return status
 
 
+#내 여행계획 불러오기
 @bp.route(rule='', methods=['GET'])
 def get_mytrip():
     if request.method == 'OPTIONS':
@@ -96,7 +99,7 @@ def get_mytrip():
     return data
 
 
-
+# 장소 찜 목록에 장소 추가
 @bp.route('/add', methods=['POST'])
 def add_myplace():
     if request.method == 'OPTIONS':
@@ -120,6 +123,7 @@ def add_myplace():
     return status
 
 
+#여행계획 추가
 @bp.route('/addmytrip', methods=['POST'])
 def add_mytrip():
     if request.method == 'OPTIONS':
@@ -164,12 +168,16 @@ def extract_route(manager, routing, solution):
     route.append(manager.IndexToNode(index))
     return route
 
+
+#경로 탐색
 @bp.route('/pathfind', methods=['POST'])
 def pathfind():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
         return '', 200
 
+
+    calculated_data = {}
     data = request.json
     distance_matrix = data['distance_matrix']
 
@@ -190,12 +198,13 @@ def pathfind():
 
     # 탐욕적인 초기 경로로 TSP 해결 설정
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
-    search_parameters.first_solution_strategy = (routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
+    search_parameters.first_solution_strategy = routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
 
     # TSP 문제 해결
     solution = routing.SolveWithParameters(search_parameters)
 
     if solution:
-        return jsonify(extract_route(manager, routing, solution))
+        calculated_data['route'] = extract_route(manager, routing, solution)
+        return calculated_data
     else:
         return None

@@ -15,6 +15,7 @@ def img_encode(file_path):
         return encoded_image
 
 
+#상품 상세 페이지
 @bp.route('/<string:detail_name>', methods=['GET'])
 def detail(detail_name):
     if request.method == 'OPTIONS':
@@ -35,8 +36,7 @@ def detail(detail_name):
         return data
 
 
-
-
+#상품 찜 목록에 상품 추가
 @bp.route('/<string:detail_name>/like', methods=['GET'])
 def add_myproduct(detail_name):
     if request.method == 'OPTIONS':

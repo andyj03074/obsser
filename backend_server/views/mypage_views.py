@@ -15,6 +15,7 @@ def img_encode(file_path):
         return encoded_image
 
 
+#내 상품 찜 목록
 @bp.route('/mypruduct', methods=['GET'])
 def my_product():
     if request.method == 'OPTIONS':
@@ -47,6 +48,7 @@ def my_product():
     return data
 
 
+#공지사항
 @bp.route('/notice', methods=['GET'])
 def _notice():
     if request.method == 'OPTIONS':
@@ -64,6 +66,7 @@ def _notice():
     return data
 
 
+#1:1 문의사항
 @bp.route('/myinquiry', methods=['GET'])
 def my_inquiry():
     if request.method == 'OPTIONS':
@@ -86,6 +89,7 @@ def my_inquiry():
     return data
 
 
+#1:1 문의사항 추가
 @bp.route('/addinquiry', methods=['POST'])
 def add_inquiry():
     if request.method == 'OPTIONS':

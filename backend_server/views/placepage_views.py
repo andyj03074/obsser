@@ -16,6 +16,7 @@ def img_encode(file_path):
         return encoded_image
 
 
+#장소 상세 설명 페이지
 @bp.route('/<string:tags>', methods=['GET'])
 def place_pages(tags):
     if request.method == 'OPTIONS':
@@ -45,6 +46,7 @@ def place_pages(tags):
     return data
 
 
+#임시 업로드 코드
 @bp.route('/', methods=['POST'])
 def place_page():
     data = request.json
@@ -59,3 +61,19 @@ def place_page():
     li = ProductInfo.query.all()
 
     return len(li)
+
+
+#업로드 코드
+@bp.route('/add', methods=['POST'])
+def place_add():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
+    data = request.json
+    name = data['name']
+    type = data['type']
+    tag = data['tag']
+    description = data['description']
+    image = data['image']
+    image_name = data['image_name']
