@@ -4,7 +4,7 @@ from ortools.constraint_solver import routing_enums_pb2
 from backend_server import db
 from backend_server.models import User, PlaceInfo, TravelPlan
 import base64
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 bp = Blueprint('mytrip_views', __name__, url_prefix='/mytrip')
 
@@ -15,6 +15,35 @@ def img_encode(file_path):
 
         return encoded_image
 
+
+#여행계획 추가
+@bp.route('/addmytrip', methods=['POST'])
+@jwt_required
+def add_mytrip():
+    if request.method == 'OPTIONS':
+        # Preflight 요청에 대해 200 OK 응답
+        return '', 200
+
+    status = {"result" : "success"}
+    data = request.json
+    name = data['name']
+    date = data['date']
+    image_url = data['image_url']
+    current_user = get_jwt_identity()
+    email = current_user['email']
+    user = User.query.filter_by(email=email).first()
+    travelplan = TravelPlan(name=name, date=date, image_url=image_url)
+    db.session.add(travelplan)
+    db.session.commit()
+
+    plan = TravelPlan.query.filter_by(name=name).first()
+    if plan not in user.mytravel_list:
+        user.mytravel_list.append(plan)
+        db.session.commit()
+        return status
+
+    status["result"] = "fail"
+    return status
 
 #내 장소 찜 목록 불러오기
 @bp.route('/myplace', methods=['GET'])
@@ -118,34 +147,6 @@ def add_myplace():
             user.myplace_list.append(add_place)
             db.session.commit()
             return status
-
-    status["result"] = "fail"
-    return status
-
-
-#여행계획 추가
-@bp.route('/addmytrip', methods=['POST'])
-def add_mytrip():
-    if request.method == 'OPTIONS':
-        # Preflight 요청에 대해 200 OK 응답
-        return '', 200
-
-    status = {"result" : "success"}
-    data = request.json
-    name = data['name']
-    date = data['date']
-    image_url = data['image_url']
-    email = session["email"]
-    user = User.query.filter_by(email=email).first()
-    travelplan = TravelPlan(name=name, date=date, image_url=image_url)
-    db.session.add(travelplan)
-    db.session.commit()
-
-    plan = TravelPlan.query.filter_by(name=name).first()
-    if plan not in user.mytravel_list:
-        user.mytravel_list.append(plan)
-        db.session.commit()
-        return status
 
     status["result"] = "fail"
     return status
