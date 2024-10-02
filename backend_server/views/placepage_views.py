@@ -1,7 +1,9 @@
+from itertools import product
+
 from flask import Blueprint, request, session
 import base64
 
-from backend_server.models import PlaceInfo, User
+from backend_server.models import PlaceInfo, User, ProductInfo
 from backend_server import db
 
 bp = Blueprint('place_page_views', __name__, url_prefix='/place_pages')
@@ -43,3 +45,17 @@ def place_pages(tags):
     return data
 
 
+@bp.route('/', methods=['POST'])
+def place_page():
+    data = request.json
+    name = data['name']
+    type = data['type']
+    tag = data['tag']
+    description = data['description']
+    image = data['image']
+    product = ProductInfo(name=name, type=type, tag=tag, description=description, image=image)
+    db.session.add(product)
+    db.session.commit()
+    li = ProductInfo.query.all()
+
+    return len(li)
