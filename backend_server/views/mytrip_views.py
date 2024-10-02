@@ -116,22 +116,19 @@ def get_mytrip():
         return '', 200
 
     data = {}
-    name_list = []
-    date_list = []
-    image_url_list = []
+    data_list = []
     current_user = get_jwt_identity()
     email = current_user['email']
     user = User.query.filter_by(email=email).first()
     travelplan_list = user.mytravel_list
     for travelplan in travelplan_list:
-        name_list.append(travelplan.name)
-        date_list.append(travelplan.date)
-        image_url_list.append(travelplan.image_url)
+        plan = {}
+        plan['name'] = travelplan.name
+        plan['date'] = travelplan.date
+        plan['image_url'] = travelplan.image_url
+        data_list.append(plan)
 
-    data['name'] = name_list
-    data['date'] = date_list
-    data['image_url'] = image_url_list
-
+    data['data'] = data_list
     return data
 
 
