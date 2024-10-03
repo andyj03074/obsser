@@ -46,7 +46,7 @@ def place_pages(tags):
     return data
 
 
-@bp.route('/<string:type>', methods=['GET'])
+@bp.route('/type/<string:type>', methods=['GET'])
 def place_page_types(type):
     if request.method == 'OPTIONS':
         return '', 200
