@@ -118,15 +118,16 @@ def place_add():
 
 
 def get_weather():
-    api_key = "your_api_key"
+    api_key = "72f2f6d71ad04fb4990151102240310"
     city = "Jeju"
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&lang=kr"
+    url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}&lang=ko"
 
     response = requests.get(url)
     data = response.json()
+    print(data)
 
     # 날씨 상태 확인
-    weather_condition = data['weather'][0]['main']
+    weather_condition = data['current']['condition']['text']
     return weather_condition
 
 
@@ -134,9 +135,9 @@ def get_weather():
 @bp.route('/', methods=['GET'])
 def recommended_places():
     keywords = {
-        "Clear": ['휴양지'],
-        "Clouds": ['독서', '카페', '실내 운동'],
-        "Rain": ['영화 감상', '실내 취미', '요리']
+        "맑음": ['휴양지', '촬영지', '야경'],
+        "흐림": ['감성적인', '한적한', '여유로운'],
+        "비": ['드라이브', '술', '맛집']
     }
 
     data = {}
