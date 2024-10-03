@@ -15,6 +15,7 @@ def img_encode(file_path):
 
         return encoded_image
 
+
 #홈화면에 3개 랜덤으로 띄움
 @bp.route(rule='/', methods=['GET'])
 def get_bulletins():
@@ -48,8 +49,7 @@ def bulletin():
     date = data['date']
     memo = data['memo']
     encoded_image = data['image']
-    image_name = data['image_name']
-    file_path = "images/" + image_name
+    file_path = "images/" + placename + ".png"
     image_data = base64.b64decode(encoded_image)
     with open(file_path, "wb") as file:
         file.write(image_data)
