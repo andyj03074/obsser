@@ -8,6 +8,7 @@ class TravelPlan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     date = db.Column(db.Integer, nullable=False)
+    schedule = db.Column(db.String(150), nullable=False)
     image_url = db.Column(db.String(150), nullable=False)
 
 

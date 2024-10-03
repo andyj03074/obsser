@@ -32,7 +32,7 @@ def add_mytrip():
     current_user = get_jwt_identity()
     email = current_user['email']
     user = User.query.filter_by(email=email).first()
-    travelplan = TravelPlan(name=name, date=date, image_url=image_url)
+    travelplan = TravelPlan(name=name, date=date, image_url=image_url, schedule="none")
     db.session.add(travelplan)
     db.session.commit()
 
@@ -43,6 +43,26 @@ def add_mytrip():
         return status
 
     status["result"] = "fail"
+    return status
+
+
+#일정 업데이트
+@bp.route('/add_schedule', methods=['POST'])
+@jwt_required()
+def add_schedule():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    data = request.json
+    schedule = data['schedule']
+    name = data['name']
+
+    trip = TravelPlan.query.filter_by(name=name).first()
+    trip.schedule = schedule
+    db.session.commit()
+
+    status = {"result": "success"}
+
     return status
 
 

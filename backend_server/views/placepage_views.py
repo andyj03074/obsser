@@ -21,7 +21,7 @@ def img_encode(file_path):
         return encoded_image
 
 
-#장소 상세 설명 페이지
+#태그별 장소 상세 설명 페이지
 @bp.route('/<string:tags>', methods=['GET'])
 def place_pages(tags):
     if request.method == 'OPTIONS':
@@ -44,6 +44,30 @@ def place_pages(tags):
     data['data'] = data_list
 
     return data
+
+
+@bp.route('/<string:type>', methods=['GET'])
+def place_page_types(type):
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    data = {}
+    data_list = []
+
+    places = PlaceInfo.query.filter_by(type=type).all()
+    for place in places:
+        pl = {}
+        pl['name'] = place.name
+        file_path = place.image
+        encoded_image = img_encode(file_path)
+        pl['image'] = encoded_image
+        data_list.append(pl)
+        
+
+    data['data'] = data_list
+
+    return data
+
 
 
 #임시 업로드 코드
