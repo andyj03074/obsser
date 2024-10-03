@@ -71,6 +71,19 @@ class Notice(db.Model):
     description = db.Column(db.Text, nullable=False)
 
 
+class Bulletin(db.Model):
+    __tablename__ = 'bulletin'
+    id = db.Column(db.Integer, primary_key=True)
+    placename = db.Column(db.String(150), nullable=False)
+    date = db.Column(db.Integer, nullable=False)
+    memo = db.Column(db.Text, nullable=False)
+    image = db.Column(db.String(), nullable=False)
 
 
+class BulletinComment(db.Model):
+    __tablename__ = 'bulletincomment'
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    bulletin_id = db.Column(db.Integer, db.ForeignKey('bulletin.id'), nullable=False)
+    bulletin = db.relationship('Bulletin', backref='comment')
 

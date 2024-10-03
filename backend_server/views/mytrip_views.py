@@ -88,6 +88,7 @@ def get_myplace():
             place['tag'] = myplace.tag
             encoded_image = img_encode(myplace.image)
             place['image'] = encoded_image
+            place['type'] = myplace.type
             data_list.append(place)
 
         data['data'] = data_list
