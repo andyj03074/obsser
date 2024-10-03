@@ -1,10 +1,15 @@
 from itertools import product
+from multiprocessing.dummy import current_process
 
 from flask import Blueprint, request, session
 import base64
+import requests
+import random
 
+from sqlalchemy.sql.expression import func
 from backend_server.models import PlaceInfo, User, ProductInfo
 from backend_server import db
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 bp = Blueprint('place_page_views', __name__, url_prefix='/place_pages')
 
@@ -50,25 +55,85 @@ def place_page():
     tag = data['tag']
     description = data['description']
     image = data['image']
-    product = PlaceInfo(name=name, type=type, tag=tag, description=description, image=image)
-    db.session.add(product)
+    place = PlaceInfo(name=name, type=type, tag=tag, description=description, image=image)
+    db.session.add(place)
     db.session.commit()
     li = PlaceInfo.query.all()
     data = {"len": len(li)}
     return data
 
 
-#업로드 코드
+#장소 업로드 코드
 @bp.route('/add', methods=['POST'])
+@jwt_required()
 def place_add():
     if request.method == 'OPTIONS':
         # Preflight 요청에 대해 200 OK 응답
         return '', 200
 
+    status = {"result": "success"}
     data = request.json
     name = data['name']
     type = data['type']
     tag = data['tag']
     description = data['description']
-    image = data['image']
+    encoded_image = data['image']
     image_name = data['image_name']
+    file_path = "images/" + image_name
+    image_data = base64.b64decode(encoded_image)
+    with open(file_path, "wb") as file:
+        file.write(image_data)
+
+    place = PlaceInfo(name=name, type=type, tag=tag, description=description, image=file_path)
+    db.session.add(place)
+    db.session.commit()
+
+    return status
+
+
+
+
+def get_weather():
+    api_key = "your_api_key"
+    city = "Jeju"
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&lang=kr"
+
+    response = requests.get(url)
+    data = response.json()
+
+    # 날씨 상태 확인
+    weather_condition = data['weather'][0]['main']
+    return weather_condition
+
+
+#날씨별 장소 추천
+@bp.route('/', methods=['GET'])
+def recommended_places():
+    keywords = {
+        "Clear": ['휴양지'],
+        "Clouds": ['독서', '카페', '실내 운동'],
+        "Rain": ['영화 감상', '실내 취미', '요리']
+    }
+
+    data = {}
+
+    current_weather = get_weather()
+
+    if current_weather in keywords:
+        recommended_keyword = random.choice(keywords[current_weather])
+        place = PlaceInfo.query.filter_by(tag=recommended_keyword).first()
+        data['current_weather'] = current_weather
+        data['name'] = place.name
+        encoded_image = img_encode(place.image)
+        data['image'] = encoded_image
+
+        return data
+
+    else:
+        random_item = PlaceInfo.query.order_by(func.random()).first()
+        data['current_weather'] = current_weather
+        data['name'] = random_item.name
+        encoded_image = img_encode(random_item.image)
+        data['image'] = encoded_image
+
+        return data

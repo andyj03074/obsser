@@ -56,3 +56,19 @@ def add_myproduct(detail_name):
 
     status["result"] = "fail"
     return status
+
+
+#임시 업로드
+@bp.route('/', methods=['POST'])
+def upload():
+    data = request.json
+    name = data['name']
+    price = data['price']
+    description = data['description']
+    image = data['image']
+    product = ProductInfo(name=name, price=price, description=description, image=image)
+    db.session.add(product)
+    db.session.commit()
+    li = ProductInfo.query.all()
+    data = {"len": len(li)}
+    return data
