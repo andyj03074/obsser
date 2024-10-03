@@ -141,7 +141,7 @@ def recommended_places():
         "흐림": ['감성적인', '한적한', '여유로운'],
         "비": ['드라이브', '술', '맛집']
     }
-
+    new_data = {}
     data = {}
 
     current_weather = get_weather()
@@ -153,8 +153,9 @@ def recommended_places():
         data['name'] = place.name
         encoded_image = img_encode(place.image)
         data['image'] = encoded_image
+        new_data['data'] = data
 
-        return data
+        return new_data
 
     else:
         random_item = PlaceInfo.query.order_by(func.random()).first()
@@ -162,5 +163,6 @@ def recommended_places():
         data['name'] = random_item.name
         encoded_image = img_encode(random_item.image)
         data['image'] = encoded_image
+        new_data['data'] = data
 
-        return data
+        return new_data
