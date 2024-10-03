@@ -1,5 +1,7 @@
 from flask import Blueprint, session, jsonify, request
 import base64
+from sqlalchemy.sql.expression import func
+import random
 
 bp = Blueprint('main', __name__)
 
@@ -13,8 +15,30 @@ def img_encode(file_path):
 
         return encoded_image
 
+#홈화면에 3개 랜덤으로 띄움
+@bp.route(rule='/', methods=['GET'])
+def get_bulletins():
+    if request.method == "OPTIONS":
+        return '', 200
 
-@bp.route(rule='/', methods=['POST'])
+
+    data = {}
+    data_list = []
+    bulletin_list = Bulletin.query.filter_by(func.random()).limit(3).all()
+
+    for bulletin in bulletin_list:
+        bl = {}
+        bl['name'] = bulletin.placename
+        bl['image'] = img_encode(bulletin.image)
+        data_list.append(bl)
+
+    data['data'] = data_list
+
+    return data
+
+
+#게시물 추가
+@bp.route(rule='/addbulletin', methods=['POST'])
 def bulletin():
     if request.method == "OPTIONS":
         return '', 200
@@ -35,12 +59,15 @@ def bulletin():
     db.session.commit()
 
 
-@bp.route(rule='/addcomment', methods=['GET'])
-def add_comment():
+#답글 추가
+@bp.route(rule='/<string:placename>', methods=['POST'])
+def add_comment(placename):
+    if request.method == "OPTIONS":
+        return '', 200
 
-
-
-
-
-
-
+    data = request.json
+    bulletin = Bulletin.query.filter_by(placename=placename).first()
+    comment = data['comment']
+    bulletin_comment = BulletinComment(content=comment, bulletin=bulletin)
+    db.session.add(bulletin_comment)
+    db.session.commit()
