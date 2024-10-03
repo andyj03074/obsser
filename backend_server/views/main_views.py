@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 bp = Blueprint('main', __name__)
 
-from backend_server.models import User, Bulletin
+from backend_server.models import User, Bulletin, BulletinComment
 from backend_server import db
 
 
@@ -64,7 +64,7 @@ def bulletin():
 
 
 #답글 추가
-'''@bp.route(rule='/<string:placename>', methods=['POST'])
+@bp.route(rule='/<string:placename>', methods=['POST'])
 @jwt_required()
 def add_comment(placename):
     if request.method == "OPTIONS":
@@ -79,4 +79,4 @@ def add_comment(placename):
     comment = data['comment']
     bulletin_comment = BulletinComment(content=comment, bulletin=bulletin, username=user.username)
     db.session.add(bulletin_comment)
-    db.session.commit()'''
+    db.session.commit()
