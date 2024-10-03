@@ -124,7 +124,6 @@ def get_weather():
 
     response = requests.get(url)
     data = response.json()
-    print(data)
 
     # 날씨 상태 확인
     weather_condition = data['current']['condition']['text']
