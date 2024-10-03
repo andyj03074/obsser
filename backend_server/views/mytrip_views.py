@@ -55,28 +55,22 @@ def get_myplace():
         return '', 200
 
     data = {}
-    namelist = []
-    description_list = []
-    tags_list = []
-    image_list = []
+    data_list = []
     if request.method == "GET":
         current_user = get_jwt_identity()
         email = current_user['email']
         user = User.query.filter_by(email=email).first()
         myplace_list = user.myplace_list
         for myplace in myplace_list:
-            namelist.append(myplace.name)
-            description_list.append(myplace.description)
-            tags_list.append(myplace.tag)
-            file_path = myplace.image
-            encoded_image = img_encode(file_path)
-            image_list.append(encoded_image)
+            place = {}
+            place['name'] = myplace.name
+            place['description'] = myplace.description
+            place['tag'] = myplace.tag
+            encoded_image = img_encode(myplace.image)
+            place['image'] = encoded_image
+            data_list.append(place)
 
-
-        data['name'] = namelist
-        data['description'] = description_list
-        data['tags'] = tags_list
-        data['image'] = image_list
+        data['data'] = data_list
 
         return data
 
