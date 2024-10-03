@@ -67,7 +67,7 @@ def get_myplace():
         for myplace in myplace_list:
             namelist.append(myplace.name)
             description_list.append(myplace.description)
-            tags_list.append(myplace.tags)
+            tags_list.append(myplace.tag)
             file_path = myplace.image
             encoded_image = img_encode(file_path)
             image_list.append(encoded_image)
