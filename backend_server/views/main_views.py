@@ -77,6 +77,6 @@ def add_comment(placename):
     data = request.json
     bulletin = Bulletin.query.filter_by(placename=placename).first()
     comment = data['comment']
-    bulletin_comment = BulletinComment(content=comment, bulletin=bulletin, user=user)
+    bulletin_comment = BulletinComment(content=comment, bulletin=bulletin, username=user.username)
     db.session.add(bulletin_comment)
     db.session.commit()
