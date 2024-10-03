@@ -134,6 +134,9 @@ def get_weather():
 #날씨별 장소 추천
 @bp.route('/', methods=['GET'])
 def recommended_places():
+    if request.method == 'OPTIONS':
+        return '', 200
+
     keywords = {
         "맑음": ['휴양지', '촬영지', '야경'],
         "흐림": ['감성적인', '한적한', '여유로운'],
