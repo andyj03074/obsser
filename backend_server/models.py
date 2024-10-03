@@ -86,5 +86,6 @@ class BulletinComment(db.Model):
     content = db.Column(db.Text, nullable=False)
     bulletin_id = db.Column(db.Integer, db.ForeignKey('bulletin.id'), nullable=False)
     bulletin = db.relationship('Bulletin', backref='comment')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='bulletin')
 
