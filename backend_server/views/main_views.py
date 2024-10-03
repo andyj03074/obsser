@@ -2,6 +2,7 @@ from flask import Blueprint, session, jsonify, request
 import base64
 from sqlalchemy.sql.expression import func
 import random
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 bp = Blueprint('main', __name__)
 
@@ -41,6 +42,7 @@ def get_bulletins():
 #게시물 추가
 @bp.route(rule='/addbulletin', methods=['POST'])
 def bulletin():
+    status = {"reuslt": "success"}
     if request.method == "OPTIONS":
         return '', 200
 
@@ -58,16 +60,23 @@ def bulletin():
     db.session.add(bulletin)
     db.session.commit()
 
+    return status
+
 
 #답글 추가
 @bp.route(rule='/<string:placename>', methods=['POST'])
+@jwt_required()
 def add_comment(placename):
     if request.method == "OPTIONS":
         return '', 200
 
+    current_user = get_jwt_identity()
+    email = current_user['email']
+    user = User.query.filter_by(email=email).first()
+
     data = request.json
     bulletin = Bulletin.query.filter_by(placename=placename).first()
     comment = data['comment']
-    bulletin_comment = BulletinComment(content=comment, bulletin=bulletin)
+    bulletin_comment = BulletinComment(content=comment, bulletin=bulletin, user=user)
     db.session.add(bulletin_comment)
     db.session.commit()
