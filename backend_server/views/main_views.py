@@ -26,7 +26,7 @@ def get_bulletins():
 
     data = {}
     data_list = []
-    bulletin_list = Bulletin.query.filter_by(func.random()).limit(3).all()
+    bulletin_list = Bulletin.query.filter_by(func.random()).limit(3)
 
     for bulletin in bulletin_list:
         bl = {}
@@ -61,6 +61,23 @@ def bulletin():
     db.session.commit()
 
     return status
+
+
+@bp.route(rule='/<string:placename>', methods=['GET'])
+def get_bulletin(placename):
+    if request.method == "OPTIONS":
+        return '', 200
+
+
+    bulletin = Bulletin.query.filter_by(placename=placename).first()
+    data = {}
+    data['placename'] = placename
+    data['image'] = img_encode(bulletin.image)
+    data['date'] = bulletin.date
+    data['memo'] = bulletin.memo
+
+
+
 
 
 #답글 추가
