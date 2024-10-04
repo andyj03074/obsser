@@ -196,17 +196,30 @@ def extract_route(manager, routing, solution):
 def get_distance_matrix(places):
     gmaps = googlemaps.Client(key='AIzaSyDjjdQYgUEhG4BoHJpld7xZq-fDn8qlRVk')
 
-    matrix = gmaps.distance_matrix(origins=places, destinations=places, mode="driving")
-    duration_matrix = []
+    default_distance = 1800
 
+    valid_places = [place if place is not None else default_distance for place in places]
+
+    # Google Maps API 호출을 위한 유효한 장소만 남김 (None이 아닌 값들만 사용)
+    if len([place for place in valid_places if isinstance(place, str)]) < 2:
+        raise ValueError("At least two valid places are required to calculate the distance matrix.")
+
+    # 유효한 장소 리스트만 API 호출에 사용
+    matrix = gmaps.distance_matrix(origins=[place for place in valid_places if isinstance(place, str)],
+                                   destinations=[place for place in valid_places if isinstance(place, str)],
+                                   mode="driving")
+
+    duration_matrix = []
     for row in matrix['rows']:
         duration_row = []
         for element in row['elements']:
-            duration_row.append(element['duration']['value'])  # 이동 시간 (초 단위)
+            if element['duration'] is not None:
+                duration_row.append(element['duration']['value'])  # 이동 시간 (초 단위)
+            else:
+                duration_row.append(default_distance)  # None일 경우 기본값 사용
         duration_matrix.append(duration_row)
 
     return duration_matrix
-
 
 #경로 탐색
 @bp.route('/pathfind', methods=['POST'])
