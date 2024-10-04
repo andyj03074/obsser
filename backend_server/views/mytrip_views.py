@@ -226,7 +226,7 @@ def pathfind():
         address.append(place.address)
 
 
-    distance_matrix = data['distance_matrix']
+    distance_matrix = get_distance_matrix(address)
 
     data = create_data_model(distance_matrix)
 
