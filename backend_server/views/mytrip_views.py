@@ -191,10 +191,11 @@ def extract_route(manager, routing, solution):
     route.append(manager.IndexToNode(index))
     return route
 
-gmaps = googlemaps.Client(key='AIzaSyDjjdQYgUEhG4BoHJpld7xZq-fDn8qlRVk')
 
 
 def get_distance_matrix(places):
+    gmaps = googlemaps.Client(key='AIzaSyDjjdQYgUEhG4BoHJpld7xZq-fDn8qlRVk')
+
     matrix = gmaps.distance_matrix(origins=places, destinations=places, mode="driving")
     duration_matrix = []
 
