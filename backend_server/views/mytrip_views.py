@@ -259,7 +259,7 @@ def pathfind():
 
         calc = {}
         calc['route'] = schedule
-        return schedule
+        return calc
 
     else:
         return None
@@ -275,7 +275,10 @@ def temp():
     address = data['address']
 
     place = PlaceInfo.query.filter_by(name=name).first()
-    place.address = address
+    new_place = PlaceInfo(name=name, address=address, tag=place.tag, type=place.type, description=place.description, image=place.image )
+    db.session.delete(place)
+    db.session.add(new_place)
+    db.session.commit()
 
 
     status = {"result" : "success"}
