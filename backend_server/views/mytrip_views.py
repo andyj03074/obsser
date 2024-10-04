@@ -5,6 +5,7 @@ from backend_server import db
 from backend_server.models import User, PlaceInfo, TravelPlan
 import base64
 from flask_jwt_extended import jwt_required, get_jwt_identity
+import googlemaps
 
 bp = Blueprint('mytrip_views', __name__, url_prefix='/mytrip')
 
@@ -190,6 +191,21 @@ def extract_route(manager, routing, solution):
     route.append(manager.IndexToNode(index))
     return route
 
+gmaps = googlemaps.Client(key='AIzaSyDjjdQYgUEhG4BoHJpld7xZq-fDn8qlRVk')
+
+
+def get_distance_matrix(places):
+    matrix = gmaps.distance_matrix(origins=places, destinations=places, mode="driving")
+    duration_matrix = []
+
+    for row in matrix['rows']:
+        duration_row = []
+        for element in row['elements']:
+            duration_row.append(element['duration']['value'])  # 이동 시간 (초 단위)
+        duration_matrix.append(duration_row)
+
+    return duration_matrix
+
 
 #경로 탐색
 @bp.route('/pathfind', methods=['POST'])
@@ -202,6 +218,13 @@ def pathfind():
 
     calculated_data = {}
     data = request.json
+    address = []
+    place_list = data["place_list"]
+    for name in place_list:
+        place = PlaceInfo.query.filter_by(name=name).first()
+        address.append(place.address)
+
+
     distance_matrix = data['distance_matrix']
 
     data = create_data_model(distance_matrix)
@@ -228,6 +251,32 @@ def pathfind():
 
     if solution:
         calculated_data['route'] = extract_route(manager, routing, solution)
-        return calculated_data
+        route = calculated_data['route']
+        schedule = []
+        for i in route:
+            schedule.append(place_list[i])
+
+
+        calc = {}
+        calc['route'] = schedule
+        return schedule
+
     else:
         return None
+
+
+@bp.route('/temp', methods=['POST'])
+def temp():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    data = request.json
+    name = data['name']
+    address = data['address']
+
+    place = PlaceInfo.query.filter_by(name=name).first()
+    place.address = address
+
+
+    status = {"result" : "success"}
+    return status
