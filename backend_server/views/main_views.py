@@ -26,7 +26,7 @@ def get_bulletins():
 
     data = {}
     data_list = []
-    bulletin_list = Bulletin.query.filter_by(func.random()).limit(3)
+    bulletin_list = Bulletin.query.order_by(func.random()).limit(3).all()
 
     for bulletin in bulletin_list:
         bl = {}
