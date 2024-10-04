@@ -71,12 +71,21 @@ def get_bulletin(placename):
 
     bulletin = Bulletin.query.filter_by(placename=placename).first()
     data = {}
+    comments = []
+    comment = {}
     data['placename'] = placename
     data['image'] = img_encode(bulletin.image)
     data['date'] = bulletin.date
     data['memo'] = bulletin.memo
+    for com in bulletin.comment:
+        comment['username'] = com.username
+        comment['content'] = com.content
+        comments.append(comment)
+
+    data['comments'] = comments
 
 
+    return data
 
 
 
